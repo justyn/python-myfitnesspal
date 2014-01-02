@@ -175,6 +175,10 @@ class Client(MFPBase):
 
         return meals
 
+    def _get_completeness(self, document):
+        complete_div = document.xpath("//div[@id='complete_day']")
+        return complete_div[0][0].attrib['class'] == 'day_complete_message'
+
     def get_date(self, *args):
         if len(args) == 3:
             date = datetime.date(
@@ -198,11 +202,13 @@ class Client(MFPBase):
 
         meals = self._get_meals(document)
         goals = self._get_goals(document)
+        complete = self._get_completeness(document)
 
         day = Day(
             date=date,
             meals=meals,
             goals=goals,
+            complete=complete,
         )
 
         return day
